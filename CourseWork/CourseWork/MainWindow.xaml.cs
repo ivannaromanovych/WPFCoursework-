@@ -29,10 +29,10 @@ namespace Coursework
             if (File.Exists(nameUserFile))
             {
                 BinaryFormatter BF = new BinaryFormatter();
-            using (FileStream FS = new FileStream(nameUserFile, FileMode.Open, FileAccess.Read))
-            {
-                user = (User)BF.Deserialize(FS);
-            }
+                using (FileStream FS = new FileStream(nameUserFile, FileMode.Open, FileAccess.Read))
+                {
+                    user = (User)BF.Deserialize(FS);
+                }
                 tboxHeight.Text = user.Height.ToString();
                 tboxHeight.IsEnabled = false;
                 tboxWeight.Text = user.Weight.ToString();
@@ -49,12 +49,33 @@ namespace Coursework
                 tboxName.Text = user.Name;
                 tboxName.IsEnabled = false;
             }
+            if (File.Exists(nameProductFile))
+            {
+                BinaryFormatter BF = new BinaryFormatter();
+                using (FileStream FS = new FileStream(nameProductFile, FileMode.Open, FileAccess.Read))
+                {
+                    products = (ObservableCollection<Product>)BF.Deserialize(FS);
+                }
+                cbProducts.ItemsSource = products;
+            }
+            else
+                cbProducts.ItemsSource = products;
+            
+            cbNewProductCategory.ItemsSource = new ProductCategory[] { ProductCategory.Proteinous, ProductCategory.Adipose, ProductCategory.Carbohydrate, ProductCategory.Mineral };
+            lbBreakfast.ItemsSource = curDay[1];
+            lbDinner.ItemsSource = curDay[2];
+
         }
         User user = new User();
+        List<Day> days = new List<Day>();
+        Day curDay = new Day();
+        ObservableCollection<Product> products = new ObservableCollection<Product>();
         string nameUserFile = "User_File.dat";
-        private void butSaveClick(object sender, RoutedEventArgs e)
+        string nameProductFile = "Products_File.dat";
+        string nameDaysFile = "Days_File.dat";
+        string errorString = "You didn't fill field";
+        private void ButSaveClick(object sender, RoutedEventArgs e)
         {
-            string errorString = "You didn't fill field";
             bool right = true;
             bool ok = true;
             if (rbSexMale.IsChecked == true)
@@ -103,7 +124,7 @@ namespace Coursework
                     tboxWeight.IsEnabled = false;
                 }
             }
-            if (String.IsNullOrWhiteSpace(tboxWeight.Text))
+            if (String.IsNullOrWhiteSpace(tboxHeight.Text))
             {
                 MessageBox.Show(errorString + "\"Height\"");
                 ok = false;
@@ -132,7 +153,10 @@ namespace Coursework
                 }
             }
             if (String.IsNullOrWhiteSpace(tboxAge.Text))
+            {
                 MessageBox.Show(errorString + "\"Age\"");
+                ok = false;
+            }
             else
             {
                 right = true;
@@ -177,11 +201,10 @@ namespace Coursework
                 using (FileStream FS = new FileStream(nameUserFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))
                 {
                     BF.Serialize(FS, user);
-                    FS.Seek(0, SeekOrigin.Begin);
                 }
             }
         }
-        private void butEditClick(object sender, RoutedEventArgs e)
+        private void ButEditClick(object sender, RoutedEventArgs e)
         {
             rbSexFemale.IsEnabled = true;
             rbSexMale.IsEnabled = true;
@@ -190,57 +213,191 @@ namespace Coursework
             tboxAge.IsEnabled = true;
             tboxName.IsEnabled = true;
         }
-
-        private void TboxAge_TextChanged(object sender, TextChangedEventArgs e)
+        private void ButAddNewProductClick(object sender, RoutedEventArgs e)
         {
-
-        }
-    }
-    [Serializable]
-    public enum ProductCategory { Proteinous = 1, Adipose, Carbohydrate, Mineral }
-    [Serializable]
-    public class Product
-    {
-        public string Name { set; get; }
-        public ProductCategory Category { set; get; }
-        public double Calories
-        {
-            set
+            Product newProduct = new Product();
+            bool ok = true;
+            if (String.IsNullOrWhiteSpace(tboxNewProductName.Text))
             {
-                if (value < 0)
-                    Calories = 0;
+                MessageBox.Show(errorString + "\"Name\"");
+                ok = false;
+            }
+            else
+                newProduct.Name = tboxNewProductName.Text;
+            if (cbNewProductCategory.SelectedIndex < 0)
+            {
+                MessageBox.Show(errorString + "\"Category\"");
+                ok = false;
+            }
+            else
+                newProduct.Category = (ProductCategory)cbNewProductCategory.SelectedItem;
+            if (String.IsNullOrWhiteSpace(tboxNewProductCalories.Text))
+            {
+                MessageBox.Show(errorString + "\"Calories\"");
+                ok = false;
+            }
+            else
+            {
+                bool right = true;
+                for (int i = 0; i < tboxNewProductCalories.Text.Length; i++)
+                    if (!Char.IsDigit(tboxNewProductCalories.Text[i]))
+                    {
+                        right = false;
+                        ok = false;
+                        break;
+                    }
+                if (!right)
+                    MessageBox.Show(errorString + "\"Calories\" right");
+                else if (uint.Parse(tboxNewProductCalories.Text) > 2404)
+                {
+                    MessageBox.Show("You entered impossible calories");
+                    ok = false;
+                }
                 else
-                    Calories = value;
+                {
+                    newProduct.Calories = uint.Parse(tboxNewProductCalories.Text);
+                }
             }
-            get
+            if (ok)
             {
-                return Calories;
+                products.Add((Product)newProduct);
+                tboxNewProductName.Text = "";
+                tboxNewProductCalories.Text = "";
+                cbNewProductCategory.SelectedIndex = -1;
+                BinaryFormatter BF = new BinaryFormatter();
+                using (FileStream FS = new FileStream(nameProductFile, FileMode.OpenOrCreate))
+                {
+                    BF.Serialize(FS, products);
+                }
             }
         }
-        public override string ToString()
+        private void ButAddNewIngestion_Click(object sender, RoutedEventArgs e)
         {
-            return $"{Name} {Category.ToString()} {Calories} cal in 100 gr";
+            bool ok = true;
+            Product newProduct = new Product();
+            if (cbProducts.SelectedIndex < 0)
+            {
+                MessageBox.Show(errorString + " \"product\"");
+                ok = false;
+            }
+            else
+                newProduct = products[cbProducts.SelectedIndex];
+            if (cbIngestionTime.SelectedIndex < 0)
+            {
+                MessageBox.Show(errorString + " \"Time\"");
+                ok = false;
+            }
+            if (String.IsNullOrWhiteSpace(tboxProductWeight.Text))
+            {
+                MessageBox.Show(errorString + " \"Product Weight\"");
+                ok = false;
+            }
+            else
+            {
+                bool right = true;
+                for (int i = 0; i < tboxProductWeight.Text.Length; i++)
+                    if (!Char.IsDigit(tboxProductWeight.Text[i]))
+                    {
+                        right = false;
+                        ok = false;
+                        break;
+                    }
+                if (!right)
+                    MessageBox.Show(errorString + "\"Product Weight\" right");
+                else if (uint.Parse(tboxProductWeight.Text) > 3000)
+                {
+                    MessageBox.Show("You entered impossible weight");
+                    ok = false;
+                }
+                else
+                {
+                    newProduct.Weight = uint.Parse(tboxProductWeight.Text);
+                    newProduct.Calories = newProduct.Calories * newProduct.Weight / 100;
+                }
+            }
+            if (ok)
+            {
+                curDay[cbIngestionTime.SelectedIndex+1].Add(newProduct);
+                MessageBox.Show(curDay[cbIngestionTime.SelectedIndex].Count.ToString());
+                tboxProductWeight.Text = "";
+                cbProducts.SelectedIndex = -1;
+                cbIngestionTime.SelectedIndex = -1;
+            }
         }
-    }
-    [Serializable]
-    public enum UserSex { Male = 1, Female }
-    [Serializable]
-    public class User
-    {
-        public string Name { set; get; }
-        public UserSex Sex { get; set; }
-        public uint Age { get; set; }
-        public uint Weight { get; set; }
-        public uint Height { get; set; }
-        public double Calories { set; get; }
-    }
-    [Serializable]
-    public enum TakeFood { Breakfast = 1, Dinned, Supper }
-    [Serializable]
-    public class Day
-    {
-        ObservableCollection<Product> breakfast;
-        ObservableCollection<Product> dinner;
-        ObservableCollection<Product> supper;
+        [Serializable]
+        public enum ProductCategory { Proteinous = 1, Adipose, Carbohydrate, Mineral }
+        [Serializable]
+        public class Product
+        {
+            public string Name { set; get; }
+            public ProductCategory Category { set; get; }
+            public double Calories { get; set; }
+            public override string ToString()
+            {
+                return $"{Name} {Category.ToString()} {Calories} cal in {Weight} gr";
+            }
+            public uint Weight { set; get; }
+            public Product()
+            {
+                Weight = 100;
+            }
+        }
+        [Serializable]
+        public enum UserSex { Male = 1, Female }
+        [Serializable]
+        public class User
+        {
+            public string Name { set; get; }
+            public UserSex Sex { get; set; }
+            public uint Age { get; set; }
+            public uint Weight { get; set; }
+            public uint Height { get; set; }
+            public double Calories { set; get; }
+        }
+        [Serializable]
+        public class Day
+        {
+            public DateTime curDate;
+            public ObservableCollection<Product> breakfast;
+            public ObservableCollection<Product> dinner;
+            public ObservableCollection<Product> supper;
+            public int CaloriesPerDay { get; set; }
+            public ObservableCollection<Product> this[int first]
+            {
+                get
+                {
+                    switch (first)
+                    {
+                        case 0: return breakfast;
+                        case 1: return dinner;
+                        case 2: return supper;
+                        default: return new ObservableCollection<Product>();
+                    }
+                }
+                set
+                {
+                    switch (first)
+                    {
+                        case 1: breakfast = value;
+                            break;
+                        case 2:
+                            dinner = value;
+                            break;
+                        case 3:
+                            supper = value;
+                            break;
+                    }
+                }
+
+            }
+            public Day()
+            {
+                breakfast = new ObservableCollection<Product>();
+                dinner = new ObservableCollection<Product>();
+                supper = new ObservableCollection<Product>();
+                curDate = new DateTime();
+                curDate = DateTime.Now;
+            }
+        }
     }
 }
