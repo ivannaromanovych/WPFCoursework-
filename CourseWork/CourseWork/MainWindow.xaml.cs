@@ -18,9 +18,6 @@ using System.Collections.ObjectModel;
 
 namespace Coursework
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -48,6 +45,12 @@ namespace Coursework
                 rbSexMale.IsEnabled = false;
                 tboxName.Text = user.Name;
                 tboxName.IsEnabled = false;
+                tblCalories.Text = user.Calories.ToString();
+            }
+            else
+            {
+                Calendar1.IsEnabled = false;
+                butAddNewIngestion.IsEnabled = false;
             }
             if (File.Exists(nameProductFile))
             {
@@ -56,15 +59,33 @@ namespace Coursework
                 {
                     products = (ObservableCollection<Product>)BF.Deserialize(FS);
                 }
-                cbProducts.ItemsSource = products;
             }
-            else
-                cbProducts.ItemsSource = products;
-            
+            cbProducts.ItemsSource = products;
+            Calendar1.SelectedDate = DateTime.Now.Date;
+            if(File.Exists(nameDaysFile))
+            {
+                BinaryFormatter BF = new BinaryFormatter();
+                using (FileStream FS = new FileStream(nameDaysFile, FileMode.Open, FileAccess.Read))
+                {
+                    days = (List<Day>)BF.Deserialize(FS); 
+                }
+                for (int i = 0; i < days.Count; i++)
+                {
+                    if (days[i].curDate.Date == Calendar1.SelectedDate)
+                    {
+                        curDay = days[i];
+                        days.Remove(curDay);
+                        break;
+                    }
+                }
+                days.Remove(curDay);
+                
+            }
             cbNewProductCategory.ItemsSource = new ProductCategory[] { ProductCategory.Proteinous, ProductCategory.Adipose, ProductCategory.Carbohydrate, ProductCategory.Mineral };
-            lbBreakfast.ItemsSource = curDay[1];
-            lbDinner.ItemsSource = curDay[2];
-
+            lbBreakfast.ItemsSource = curDay[0];
+            lbDinner.ItemsSource = curDay[1];
+            lbSupper.ItemsSource = curDay[2];
+            tblTakedCalories.Text = curDay.CaloriesPerDay.ToString();
         }
         User user = new User();
         List<Day> days = new List<Day>();
@@ -73,7 +94,7 @@ namespace Coursework
         string nameUserFile = "User_File.dat";
         string nameProductFile = "Products_File.dat";
         string nameDaysFile = "Days_File.dat";
-        string errorString = "You didn't fill field";
+        string errorString = "You didn't fill field ";
         private void ButSaveClick(object sender, RoutedEventArgs e)
         {
             bool right = true;
@@ -197,6 +218,8 @@ namespace Coursework
                 else
                     user.Calories = (10 * user.Weight + 6.25 * user.Height - 5 * user.Age + 5) * 1.3;
                 tblCalories.Text = user.Calories.ToString();
+                Calendar1.IsEnabled = true;
+                butAddNewIngestion.IsEnabled = true;
                 BinaryFormatter BF = new BinaryFormatter();
                 using (FileStream FS = new FileStream(nameUserFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))
                 {
@@ -271,25 +294,25 @@ namespace Coursework
                 }
             }
         }
-        private void ButAddNewIngestion_Click(object sender, RoutedEventArgs e)
+        private void ButAddNewIngestionClick(object sender, RoutedEventArgs e)
         {
             bool ok = true;
             Product newProduct = new Product();
             if (cbProducts.SelectedIndex < 0)
             {
-                MessageBox.Show(errorString + " \"product\"");
+                MessageBox.Show(errorString + "\"Product\"");
                 ok = false;
             }
             else
                 newProduct = products[cbProducts.SelectedIndex];
             if (cbIngestionTime.SelectedIndex < 0)
             {
-                MessageBox.Show(errorString + " \"Time\"");
+                MessageBox.Show(errorString + "\"Time\"");
                 ok = false;
             }
             if (String.IsNullOrWhiteSpace(tboxProductWeight.Text))
             {
-                MessageBox.Show(errorString + " \"Product Weight\"");
+                MessageBox.Show(errorString + "\"Product Weight\"");
                 ok = false;
             }
             else
@@ -317,11 +340,40 @@ namespace Coursework
             }
             if (ok)
             {
-                curDay[cbIngestionTime.SelectedIndex+1].Add(newProduct);
-                MessageBox.Show(curDay[cbIngestionTime.SelectedIndex].Count.ToString());
+                curDay[cbIngestionTime.SelectedIndex].Add(newProduct);
+                curDay.CaloriesPerDay += newProduct.Calories;
                 tboxProductWeight.Text = "";
                 cbProducts.SelectedIndex = -1;
                 cbIngestionTime.SelectedIndex = -1;
+                tblTakedCalories.Text = curDay.CaloriesPerDay.ToString();
+            }
+        }
+        private void CalendarSelectedDatesChanged(object sender, SelectionChangedEventArgs e)
+        {
+            days.Add(curDay);
+            curDay = new Day();
+            curDay.curDate = Calendar1.SelectedDate.Value;
+            for (int i = 0; i < days.Count; i++)
+            {
+                if (days[i].curDate.Date == Calendar1.SelectedDate)
+                {
+                    curDay = days[i];
+                    days.Remove(curDay);
+                    break;
+                }
+            }
+            lbBreakfast.ItemsSource = curDay[0];
+            lbDinner.ItemsSource = curDay[1];
+            lbSupper.ItemsSource = curDay[2];
+            tblTakedCalories.Text = curDay.CaloriesPerDay.ToString();
+        }
+        private void ButSaveAllClick(object sender, RoutedEventArgs e)
+        {
+            days.Add(curDay);
+            BinaryFormatter BF = new BinaryFormatter();
+            using (FileStream FS = new FileStream(nameDaysFile, FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                BF.Serialize(FS, days);
             }
         }
         [Serializable]
@@ -359,9 +411,9 @@ namespace Coursework
         {
             public DateTime curDate;
             public ObservableCollection<Product> breakfast;
-            public ObservableCollection<Product> dinner;
+            public ObservableCollection<Product > dinner;
             public ObservableCollection<Product> supper;
-            public int CaloriesPerDay { get; set; }
+            public double CaloriesPerDay { get; set; }
             public ObservableCollection<Product> this[int first]
             {
                 get

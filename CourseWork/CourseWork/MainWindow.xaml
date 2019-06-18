@@ -5,11 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Coursework"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" FontFamily="Segoe Print" FontSize="12">
+        Title="MainWindow" Height="616.387" Width="850.42" FontFamily="Segoe Print" FontSize="12">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="655*"/>
-            <ColumnDefinition Width="137*"/>
         </Grid.ColumnDefinitions>
 
 
@@ -51,17 +49,17 @@
 
         <Calendar HorizontalAlignment="Left" Height="384" Margin="10,36,0,0" VerticalAlignment="Top" Width="281"/>
 
-        <TextBlock HorizontalAlignment="Left" Height="22" Margin="498,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Text="Adjusted number of calories per day:" Grid.ColumnSpan="2"/>
-        <TextBlock Name="tblCalories" HorizontalAlignment="Left" Height="24" Margin="74.756,33,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="62" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Height="22" Margin="538,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Text="Adjusted number of calories per day:"/>
+        <TextBlock Name="tblCalories" HorizontalAlignment="Left" Height="24" Margin="770,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="62"/>
 
-        <Label  Content="Breakfast" HorizontalAlignment="Left" Height="32" Margin="296,37,0,0" VerticalAlignment="Top" Width="130"/>
-        <ListBox x:Name="lbBreakfast" HorizontalAlignment="Left" Height="91" Margin="296,64,0,0" VerticalAlignment="Top" Width="168"/>
+        <Label  Content="Breakfast" HorizontalAlignment="Left" Height="32" Margin="296,37,0,0" VerticalAlignment="Top" Width="73"/>
+        <ListBox x:Name="lbBreakfast" HorizontalAlignment="Left" Height="91" Margin="296,64,0,0" VerticalAlignment="Top" Width="234"/>
 
-        <Label Content="Dinner" HorizontalAlignment="Left" Height="32" Margin="296,160,0,0" VerticalAlignment="Top" Width="130"/>
-        <ListBox x:Name="lbDinner" HorizontalAlignment="Left" Height="94" Margin="296,198,0,0" VerticalAlignment="Top" Width="168"/>
+        <Label Content="Dinner" HorizontalAlignment="Left" Height="32" Margin="296,155,0,0" VerticalAlignment="Top" Width="73"/>
+        <ListBox x:Name="lbDinner" HorizontalAlignment="Left" Height="94" Margin="296,180,0,0" VerticalAlignment="Top" Width="234"/>
 
-        <Label  Content="Supper" HorizontalAlignment="Left" Height="32" Margin="296,292,0,0" VerticalAlignment="Top" Width="130"/>
-        <ListBox x:Name="lbSupper" HorizontalAlignment="Left" Height="82" Margin="296,328,0,0" VerticalAlignment="Top" Width="168"/>
+        <Label  Content="Supper" HorizontalAlignment="Left" Height="32" Margin="296,273,0,0" VerticalAlignment="Top" Width="73"/>
+        <ListBox x:Name="lbSupper" HorizontalAlignment="Left" Height="82" Margin="296,298,0,0" VerticalAlignment="Top" Width="234"/>
 
         <RadioButton x:Name="rbSexMale" Content="Male" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5,0,0"/>
         <RadioButton x:Name="rbSexFemale" Content="Female" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="56,6,0,0"/>
@@ -77,11 +75,11 @@
         <Label Content="Age" HorizontalAlignment="Left" Height="35" Margin="387,0,0,0" VerticalAlignment="Top" Width="39"/>
         <TextBox x:Name="tboxAge" HorizontalAlignment="Left" Height="30" Margin="426,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="38" ToolTip="Must be positiv number"/>
 
-        <Label Content="Name" Margin="471,0,126.244,383"/>
+        <Label Content="Name" Margin="469,2,318,547"/>
         <TextBox x:Name="tboxName" HorizontalAlignment="Left" Height="30" Margin="529,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
 
-        <Button Name="butSave" Content="Save" HorizontalAlignment="Left" Height="28" Margin="629,5,0,0" VerticalAlignment="Top" Width="74" Click="ButSaveClick" Grid.ColumnSpan="2"/>
-        <Button Name="butEdit" Content="Edit" HorizontalAlignment="Left" Height="28" Margin="52.756,5,0,0" VerticalAlignment="Top" Width="74" Click="ButEditClick" Grid.Column="1"/>
+        <Button Name="butSave" Content="Save" HorizontalAlignment="Left" Height="28" Margin="629,5,0,0" VerticalAlignment="Top" Width="90" Click="ButSaveClick"/>
+        <Button Name="butEdit" Content="Edit" HorizontalAlignment="Left" Height="28" Margin="742,5,0,0" VerticalAlignment="Top" Width="90" Click="ButEditClick"/>
 
         <Separator Panel.ZIndex="-1" HorizontalAlignment="Left" Height="72" Margin="119,-20,0,0" VerticalAlignment="Top" Width="29" RenderTransformOrigin="0.5,0.5">
             <Separator.RenderTransform>
@@ -119,30 +117,34 @@
             </Separator.RenderTransform>
         </Separator>
 
-        <Calendar HorizontalAlignment="Left" Height="384" Margin="10,36,0,0" VerticalAlignment="Top" Width="281"/>
+        <Calendar Name="Calendar1" SelectedDatesChanged="CalendarSelectedDatesChanged" HorizontalAlignment="Left" Height="384" Margin="10,36,0,0" VerticalAlignment="Top" Width="281"/>
 
-        <TextBlock HorizontalAlignment="Left" Height="22" Margin="498,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Text="Adjusted number of calories per day:" Grid.ColumnSpan="2"/>
+        <TextBlock HorizontalAlignment="Left" Height="22" Margin="538,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="232" Text="Adjusted number of calories per day:"/>
 
-        <Button x:Name="butAddNewIngestion" Content="Add" Click="ButAddNewIngestion_Click" HorizontalAlignment="Left" Height="30" Margin="47.756,64,0,0" VerticalAlignment="Top" Width="65" Grid.Column="1"/>
-        <TextBlock FontSize="14" Text="Add new ingestion" HorizontalAlignment="Left" Height="36" Margin="471,58,0,0" VerticalAlignment="Top" Width="186" Grid.ColumnSpan="2"/>
-        <ComboBox x:Name="cbProducts" HorizontalAlignment="Left" Height="35" Margin="469,106,0,0" VerticalAlignment="Top" Width="188" Grid.ColumnSpan="2"/>
-        <TextBox x:Name="tboxProductWeight" HorizontalAlignment="Left" Height="32" Margin="6.756,106,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59" Grid.Column="1"/>
-        <TextBlock HorizontalAlignment="Left" Height="32" Margin="70.756,106,0,0" TextWrapping="Wrap" Text="gram" VerticalAlignment="Top" Width="42" Grid.Column="1"/>
-        <TextBlock HorizontalAlignment="Left" Height="35" Margin="474,145,0,0" TextWrapping="Wrap" Text="Time" VerticalAlignment="Top" Width="42"/>
-        <ComboBox x:Name="cbIngestionTime" HorizontalAlignment="Left" Height="35" Margin="558,146,0,0" VerticalAlignment="Top" Width="210" Grid.ColumnSpan="2">
+        <Button x:Name="butAddNewIngestion" Content="Add" Click="ButAddNewIngestionClick" HorizontalAlignment="Left" Height="30" Margin="767,79,0,0" VerticalAlignment="Top" Width="65"/>
+        <TextBlock FontSize="14" Text="Add new ingestion" HorizontalAlignment="Left" Height="36" Margin="535,73,0,0" VerticalAlignment="Top" Width="186"/>
+        <ComboBox x:Name="cbProducts" HorizontalAlignment="Left" Height="35" Margin="533,121,0,0" VerticalAlignment="Top" Width="188"/>
+        <TextBox x:Name="tboxProductWeight" HorizontalAlignment="Left" Height="32" Margin="726,124,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
+        <TextBlock HorizontalAlignment="Left" Height="32" Margin="790,129,0,0" TextWrapping="Wrap" Text="gram" VerticalAlignment="Top" Width="42"/>
+        <TextBlock HorizontalAlignment="Left" Height="35" Margin="538,173,0,0" TextWrapping="Wrap" Text="Time" VerticalAlignment="Top" Width="42"/>
+        <ComboBox x:Name="cbIngestionTime" HorizontalAlignment="Left" Height="35" Margin="596,161,0,0" VerticalAlignment="Top" Width="236">
             <ComboBoxItem>Breakfast</ComboBoxItem>
             <ComboBoxItem>Dinner</ComboBoxItem>
             <ComboBoxItem>Supper</ComboBoxItem>
         </ComboBox>
 
-        <TextBlock FontSize="14" Text="Add new product" HorizontalAlignment="Left" Height="36" Margin="471,198,0,0" VerticalAlignment="Top" Width="186" Grid.ColumnSpan="2"/>
-        <TextBlock HorizontalAlignment="Left" Height="32" Margin="474,246,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Width="79"/>
-        <TextBox x:Name="tboxNewProductName" HorizontalAlignment="Left" Height="32" Margin="558,246,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="210" Grid.ColumnSpan="2"/>
-        <TextBlock HorizontalAlignment="Left" Height="32" Margin="471,283,0,0" TextWrapping="Wrap" Text="Category" VerticalAlignment="Top" Width="79"/>
-        <ComboBox x:Name="cbNewProductCategory" HorizontalAlignment="Left" Height="35" Margin="558,283,0,0" VerticalAlignment="Top" Width="210" Grid.ColumnSpan="2"/>
-        <TextBlock HorizontalAlignment="Left" Height="32" Margin="474,323,0,0" TextWrapping="Wrap" Text="Cal/100 gr" VerticalAlignment="Top" Width="79"/>
-        <TextBox x:Name="tboxNewProductCalories" HorizontalAlignment="Left" Height="32" Margin="558,323,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="210" Grid.ColumnSpan="2"/>
-        <Button x:Name="butAddNewProduct" Content="Add" Click="ButAddNewProductClick" HorizontalAlignment="Left" Height="36" Margin="48,198,0,0" VerticalAlignment="Top" Width="65" Grid.Column="1"/>
-
+        <TextBlock FontSize="14" Text="Add new product" HorizontalAlignment="Left" Height="36" Margin="535,213,0,0" VerticalAlignment="Top" Width="186"/>
+        <TextBlock HorizontalAlignment="Left" Height="32" Margin="538,261,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Width="79"/>
+        <TextBox x:Name="tboxNewProductName" HorizontalAlignment="Left" Height="32" Margin="622,261,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="210"/>
+        <TextBlock HorizontalAlignment="Left" Height="32" Margin="541,298,0,0" TextWrapping="Wrap" Text="Category" VerticalAlignment="Top" Width="79"/>
+        <ComboBox x:Name="cbNewProductCategory" HorizontalAlignment="Left" Height="35" Margin="622,298,0,0" VerticalAlignment="Top" Width="210"/>
+        <TextBlock HorizontalAlignment="Left" Height="32" Margin="538,338,0,0" TextWrapping="Wrap" Text="Cal/100 gr" VerticalAlignment="Top" Width="79"/>
+        <TextBox x:Name="tboxNewProductCalories" HorizontalAlignment="Left" Height="32" Margin="622,338,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="210"/>
+        <Button x:Name="butAddNewProduct" Content="Add" Click="ButAddNewProductClick" HorizontalAlignment="Left" Height="36" Margin="767,213,0,0" VerticalAlignment="Top" Width="65"/>
+        <Button x:Name="butReport" Content="Report" HorizontalAlignment="Left" Height="36" Margin="541,374,0,0" VerticalAlignment="Top" Width="133"/>
+        <Button x:Name="butSaveAll" Content="Save All" Click="ButSaveAllClick" HorizontalAlignment="Left" Height="36" Margin="694,374,0,0" VerticalAlignment="Top" Width="138"/>
+        <TextBlock x:Name="tblTakedCalories" HorizontalAlignment="Left" Height="18" Margin="296,392,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
+        <TextBlock HorizontalAlignment="Left" Height="18" Margin="360,392,0,0" TextWrapping="Wrap" Text="cal of" VerticalAlignment="Top" Width="59"/>
+        <TextBlock Text="{Binding ElementName=tblCalories, Path=Text, Mode=OneWay}" HorizontalAlignment="Left" Height="18" Margin="440,392,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
     </Grid>
 </Window>
